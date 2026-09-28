@@ -16,21 +16,22 @@ const roles = [
   "UI Designer",
 ];
 
-
 export default function SearchFilter() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
-  const filtered = users.filter(
-    (user) => {
-        const matchesSearch = user.name.toLowerCase().includes(search.toLowerCase()) || 
-                            user.role.toLowerCase().includes(search.toLowerCase());
-        
-        const matchesRole = roleFilter === 'All' || user.role === roleFilter;
 
-        return matchesSearch && matchesRole;
-    }
-  )
+  const filtered = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.role.toLowerCase().includes(search.toLowerCase());
 
+    const matchesRole =
+      roleFilter === "All" || user.role === roleFilter;
+
+    return matchesSearch && matchesRole;
+  });
+
+  // Highlight matching text
   const highlight = (text) => {
     if (!search.trim()) return text;
 
@@ -48,13 +49,20 @@ export default function SearchFilter() {
 
   return (
     <div className="search-filter">
-       <h1>Search & Filter Users</h1>
-       <p className="subtitle">Find users easily by name or role.</p>
-       <div className="filter-info">
+      {/* Header */}
+      <h1>Search & Filter Users</h1>
+      <p className="subtitle">
+        Find users easily by name or role.
+      </p>
+
+      {/* Filter Information */}
+      <div className="filter-info">
         <p>Search: {search || "All users"}</p>
         <p>Role: {roleFilter}</p>
       </div>
-        <div className="filter-buttons">
+
+      {/* Filter Buttons */}
+      <div className="filter-buttons">
         {roles.map((role) => (
           <button
             key={role}
@@ -67,41 +75,50 @@ export default function SearchFilter() {
           </button>
         ))}
       </div>
-      <input type="text" 
-              className="search-input"
-            value= {search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or role..."/>
-            <div className="results-heading">
-              <span>Users List</span>
-              <span className="results-count">
-                {filtered.length} Results
+
+      {/* Search Input */}
+      <input
+        className="search-input"
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search by name or role..."
+      />
+
+      {/* Results Heading */}
+      <div className="results-heading">
+        <span>Users List</span>
+        <span className="results-count">
+          {filtered.length} Results
+        </span>
+      </div>
+
+      {/* Users List */}
+      <ul>
+        {filtered.map((user) => (
+          <li key={user.id}>
+            <div className="user-avatar">
+              {user.name.slice(0, 2).toUpperCase()}
+            </div>
+
+            <div className="user-details">
+              <strong>{highlight(user.name)}</strong>
+              <span className="user-role">
+                {highlight(user.role)}
               </span>
             </div>
-            <ul>
-              {filtered.map((user) => (
-                <li key={user.id}>
-                  <div className="user-avatar">
-                    {user.name.slice(0, 2).toUpperCase()}
-                  </div>
+          </li>
+        ))}
+      </ul>
 
-                  <div className="user-details">
-                    <strong>{highlight(user.name)}</strong>
-                    <span className="user-role">
-                      {highlight(user.role)}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {filtered.length === 0 && (
-              <div className="empty-state">
-                No users found 😕
-                <br />
-                Try another search or filter.
-              </div>
-            )}
+      {/* Empty State */}
+      {filtered.length === 0 && (
+        <div className="empty-state">
+          No users found 😕
+          <br />
+          Try another search or filter.
+        </div>
+      )}
     </div>
   );
 }
